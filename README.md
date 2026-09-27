@@ -13,3 +13,13 @@ It is a GitHub template repository — use the **Use this template** button, or:
 gh repo create my-app --template SubAgentX/project-template --private --clone
 cd my-app && ./scripts/init.sh "My App" "SubAgentX/my-app"
 ```
+
+## Playbook
+
+Step-by-step commands for creating a project from the template, with separate
+paths for macOS, Linux and Windows:
+
+**[Project Bootstrap Playbook](https://claude.ai/artifact/UAeGHcB6XzXqgRdZovspCw)**
+
+The page's source lives in [`playbook/`](playbook/) — edit there, then
+republish to that same URL.

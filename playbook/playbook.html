@@ -1,0 +1,716 @@
+<title>Project Bootstrap Playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+  :root {
+    color-scheme: light;
+    --paper:      #F6F7F9;
+    --card:       #FFFFFF;
+    --ink:        #14181D;
+    --ink-soft:   #4B5563;
+    --muted:      #6B7684;
+    --rule:       #DCE1E8;
+    --rule-soft:  #E9EDF2;
+    --term-bg:    #14181D;
+    --term-ink:   #E4E9F0;
+    --term-dim:   #8894A5;
+    --term-rule:  #2A313A;
+    --nix:        #0F766E;
+    --nix-soft:   #E2F1EF;
+    --win:        #1D4ED8;
+    --win-soft:   #E4EAFB;
+    --warn:       #A2561A;
+    --warn-soft:  #FBF0E4;
+    --shadow:     0 1px 2px rgba(20,24,29,.05), 0 8px 24px -12px rgba(20,24,29,.14);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --paper:     #0D1014;
+      --card:      #151A20;
+      --ink:       #E8ECF2;
+      --ink-soft:  #B4BECB;
+      --muted:     #8794A4;
+      --rule:      #262E37;
+      --rule-soft: #1E252D;
+      --term-bg:   #090B0E;
+      --term-ink:  #DDE4EC;
+      --term-dim:  #79879A;
+      --term-rule: #232A33;
+      --nix:       #4DD4C4;
+      --nix-soft:  #10302E;
+      --win:       #7EA2FF;
+      --win-soft:  #16223F;
+      --warn:      #E0A264;
+      --warn-soft: #2A1F13;
+      --shadow:    0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --paper:     #0D1014;
+    --card:      #151A20;
+    --ink:       #E8ECF2;
+    --ink-soft:  #B4BECB;
+    --muted:     #8794A4;
+    --rule:      #262E37;
+    --rule-soft: #1E252D;
+    --term-bg:   #090B0E;
+    --term-ink:  #DDE4EC;
+    --term-dim:  #79879A;
+    --term-rule: #232A33;
+    --nix:       #4DD4C4;
+    --nix-soft:  #10302E;
+    --win:       #7EA2FF;
+    --win-soft:  #16223F;
+    --warn:      #E0A264;
+    --warn-soft: #2A1F13;
+    --shadow:    0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.6);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding-inline: 16px;
+    padding-block: 0 72px;
+  }
+
+  /* ---------- masthead ---------- */
+  .mast { padding-block: 40px 20px; }
+  .kicker {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 12px;
+  }
+  h1 {
+    font-family: Archivo, ui-sans-serif, system-ui, sans-serif;
+    font-weight: 700;
+    font-size: clamp(30px, 6.5vw, 42px);
+    line-height: 1.08;
+    letter-spacing: -.022em;
+    margin: 0 0 14px;
+    text-wrap: balance;
+  }
+  .standfirst {
+    font-size: 16px;
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 58ch;
+  }
+  .repo-line {
+    margin: 18px 0 0;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+  .repo-line a { color: var(--ink-soft); text-decoration-color: var(--rule); text-underline-offset: 3px; }
+  .repo-line a:hover { color: var(--ink); }
+
+  /* ---------- os switcher ---------- */
+  .switch-bar {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 20;
+    background: color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--rule);
+    padding: 10px 16px;
+  }
+  .switch-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .switch-label {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .seg { display: flex; gap: 4px; background: var(--rule-soft); padding: 3px; border-radius: 8px; }
+  .seg button {
+    font: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 5px 13px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--ink-soft);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .seg button:hover { color: var(--ink); }
+  .seg button[aria-pressed="true"] { background: var(--card); color: var(--ink); box-shadow: var(--shadow); }
+  .seg button:focus-visible { outline: 2px solid var(--nix); outline-offset: 2px; }
+
+  /* ---------- sections ---------- */
+  .part { margin-top: 48px; }
+  .part-head { border-bottom: 2px solid var(--ink); padding-bottom: 10px; margin-bottom: 4px; }
+  .part-num {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 5px;
+  }
+  .part-head h2 {
+    font-family: Archivo, ui-sans-serif, system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 21px;
+    letter-spacing: -.012em;
+    margin: 0;
+  }
+  .part-note { color: var(--muted); font-size: 13.5px; margin: 10px 0 0; }
+
+  /* ---------- steps ---------- */
+  .step { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 14px; padding-block: 26px; border-bottom: 1px solid var(--rule-soft); }
+  /* A grid track defaults to min-width:auto, so a long command line would widen
+     the whole page instead of scrolling inside its own block. */
+  .step > *, .cmd, .gotcha, .cmd pre { min-width: 0; }
+  .step:last-child { border-bottom: 0; }
+  .dot {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    width: 30px; height: 30px;
+    display: grid; place-items: center;
+    background: var(--card);
+    margin-top: 1px;
+  }
+  .step h3 {
+    font-family: Archivo, ui-sans-serif, system-ui, sans-serif;
+    font-size: 16.5px;
+    font-weight: 600;
+    letter-spacing: -.008em;
+    margin: 3px 0 6px;
+    text-wrap: balance;
+  }
+  .step p { margin: 0 0 12px; color: var(--ink-soft); max-width: 62ch; font-size: 14.5px; }
+  .step p:last-child { margin-bottom: 0; }
+  .step code { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: .89em; background: var(--rule-soft); padding: 1px 5px; border-radius: 4px; }
+  /* Terminal blocks own their own colours; the inline-chip styling above must
+     not leak into them or the command text renders light-on-light. */
+  .cmd pre code, .gotcha pre code { background: none; padding: 0; border-radius: 0; color: inherit; font-size: inherit; }
+
+  /* ---------- command blocks ---------- */
+  .cmd { border-radius: 10px; overflow: hidden; background: var(--term-bg); border: 1px solid var(--term-rule); margin-bottom: 10px; }
+  .cmd:last-child { margin-bottom: 0; }
+  .cmd-top {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 7px 10px 7px 12px;
+    border-bottom: 1px solid var(--term-rule);
+  }
+  .tag {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 5px; font-weight: 500;
+  }
+  .tag.nix  { background: var(--nix-soft); color: var(--nix); }
+  .tag.win  { background: var(--win-soft); color: var(--win); }
+  .tag.all  { background: var(--term-rule); color: var(--term-dim); }
+  .copy {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+    background: transparent; border: 1px solid var(--term-rule); color: var(--term-dim);
+    padding: 4px 9px; border-radius: 5px; cursor: pointer; white-space: nowrap;
+  }
+  .copy:hover { color: var(--term-ink); border-color: var(--term-dim); }
+  .copy:focus-visible { outline: 2px solid var(--nix); outline-offset: 2px; }
+  .copy[data-done="1"] { color: var(--nix); border-color: var(--nix); }
+  pre {
+    margin: 0; padding: 13px 14px;
+    overflow-x: auto;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12.9px; line-height: 1.75;
+    color: var(--term-ink);
+    tab-size: 2;
+  }
+  pre .c { color: var(--term-dim); }
+
+  /* ---------- callouts ---------- */
+  .note {
+    border-left: 3px solid var(--warn);
+    background: var(--warn-soft);
+    padding: 13px 15px;
+    border-radius: 0 8px 8px 0;
+    margin: 14px 0 0;
+  }
+  .note strong { color: var(--warn); font-weight: 600; }
+  .note p { margin: 0; font-size: 14px; color: var(--ink-soft); max-width: none; }
+  .note p + p { margin-top: 8px; }
+
+  .gotchas { display: grid; gap: 14px; margin-top: 22px; }
+  .gotcha { background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: 16px 17px; box-shadow: var(--shadow); }
+  .gotcha h3 {
+    font-family: Archivo, ui-sans-serif, system-ui, sans-serif;
+    font-size: 15px; font-weight: 600; margin: 0 0 6px;
+    display: flex; align-items: center; gap: 9px; flex-wrap: wrap;
+  }
+  .gotcha p { margin: 0 0 10px; font-size: 14px; color: var(--ink-soft); }
+  .gotcha p:last-child { margin-bottom: 0; }
+
+  footer { margin-top: 54px; padding-top: 22px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 13px; }
+  footer a { color: var(--ink-soft); }
+
+  [hidden] { display: none !important; }
+
+  @media (max-width: 460px) {
+    .step { grid-template-columns: 1fr; gap: 0; }
+    .dot { margin-bottom: 10px; }
+    pre { font-size: 12.2px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+
+<div class="switch-bar">
+  <div class="switch-inner">
+    <span class="switch-label">Your machine</span>
+    <div class="seg" role="group" aria-label="Choose your operating system">
+      <button type="button" id="os-macos" data-pick="macos" aria-pressed="false">macOS</button>
+      <button type="button" id="os-linux" data-pick="linux" aria-pressed="false">Linux</button>
+      <button type="button" id="os-windows" data-pick="windows" aria-pressed="true">Windows</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <header class="mast">
+    <p class="kicker">Runbook &middot; SubAgentX</p>
+    <h1>Project Bootstrap Playbook</h1>
+    <p class="standfirst">
+      Every command needed to go from an empty terminal to a running project with CI,
+      created from your template repository. Pick your machine above and the page shows
+      only the commands that apply to it.
+    </p>
+    <p class="repo-line">
+      template &rarr; <a href="https://github.com/SubAgentX/project-template">github.com/SubAgentX/project-template</a>
+    </p>
+  </header>
+
+  <!-- ============ PART 1 ============ -->
+  <section class="part">
+    <div class="part-head">
+      <span class="part-num">Part one</span>
+      <h2>Set up the machine</h2>
+    </div>
+    <p class="part-note">Run these once per computer. Skip any tool you already have.</p>
+
+    <div class="step">
+      <div class="dot">1</div>
+      <div>
+        <h3>Install Git</h3>
+        <p>Everything below depends on it. Check with <code>git --version</code> before installing.</p>
+
+        <div class="cmd" data-os="macos">
+          <div class="cmd-top"><span class="tag nix">macOS</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>brew install git</code></pre>
+        </div>
+
+        <div class="cmd" data-os="linux">
+          <div class="cmd-top"><span class="tag nix">Linux &middot; Debian / Ubuntu</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>sudo apt update &amp;&amp; sudo apt install -y git</code></pre>
+        </div>
+
+        <div class="cmd" data-os="windows">
+          <div class="cmd-top"><span class="tag win">Windows &middot; PowerShell</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>winget install --id Git.Git -e</code></pre>
+        </div>
+
+        <div class="note" data-os="windows">
+          <p><strong>Restart your terminal afterwards.</strong> <code>winget</code> updates PATH, but an already-open PowerShell window keeps the old one and will report <code>git</code> as not found.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="dot">2</div>
+      <div>
+        <h3>Install the GitHub CLI</h3>
+        <p>This is what creates a repository from your template in one command.</p>
+
+        <div class="cmd" data-os="macos">
+          <div class="cmd-top"><span class="tag nix">macOS</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>brew install gh</code></pre>
+        </div>
+
+        <div class="cmd" data-os="linux">
+          <div class="cmd-top"><span class="tag nix">Linux &middot; Debian / Ubuntu</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>sudo apt install -y gh</code></pre>
+        </div>
+
+        <div class="cmd" data-os="windows">
+          <div class="cmd-top"><span class="tag win">Windows &middot; PowerShell</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>winget install --id GitHub.cli -e</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="dot">3</div>
+      <div>
+        <h3>Sign in to GitHub</h3>
+        <p>Choose <em>GitHub.com</em>, then <em>HTTPS</em>, then authenticate in the browser. This also sets up git credentials, so pushes stop asking for a password.</p>
+        <div class="cmd">
+          <div class="cmd-top"><span class="tag all">Every platform</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>gh auth login</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="dot">4</div>
+      <div>
+        <h3>Set your commit identity</h3>
+        <p>Without this, git refuses your first commit. The name and email appear on every commit you make.</p>
+        <div class="cmd">
+          <div class="cmd-top"><span class="tag all">Every platform</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>git config --global user.name "Your Name"
+git config --global user.email "you@example.com"</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="step" data-os="windows">
+      <div class="dot">5</div>
+      <div>
+        <h3>Allow local scripts to run</h3>
+        <p>Windows blocks <code>.ps1</code> files by default, so <code>init.ps1</code> would fail with <em>running scripts is disabled on this system</em>. This permits scripts for the current window only and resets when you close it &mdash; the safe way to do it.</p>
+        <div class="cmd">
+          <div class="cmd-top"><span class="tag win">Windows &middot; PowerShell</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass</code></pre>
+        </div>
+        <div class="note">
+          <p><strong>Make it permanent instead?</strong> Run <code>Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned</code> once. That allows your own local scripts while still blocking unsigned ones downloaded from the internet.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PART 2 ============ -->
+  <section class="part">
+    <div class="part-head">
+      <span class="part-num">Part two</span>
+      <h2>Create a project</h2>
+    </div>
+    <p class="part-note">The sequence you repeat for every new project. Substitute your own name for <code>my-app</code> throughout.</p>
+
+    <div class="step">
+      <div class="dot">1</div>
+      <div>
+        <h3>Go to where you keep code</h3>
+        <p>Creates the folder if it is not there yet, then moves into it.</p>
+
+        <div class="cmd" data-os="macos"><div class="cmd-top"><span class="tag nix">macOS</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>mkdir -p ~/projects &amp;&amp; cd ~/projects</code></pre></div>
+
+        <div class="cmd" data-os="linux"><div class="cmd-top"><span class="tag nix">Linux</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>mkdir -p ~/projects &amp;&amp; cd ~/projects</code></pre></div>
+
+        <div class="cmd" data-os="windows"><div class="cmd-top"><span class="tag win">Windows &middot; PowerShell</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>New-Item -ItemType Directory -Force ~\projects | Out-Null
+cd ~\projects</code></pre></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="dot">2</div>
+      <div>
+        <h3>Create the repository from your template</h3>
+        <p>One command creates a new GitHub repository from the template, gives it a clean first commit with none of the template's history, and clones it locally with the remote already wired up. Swap <code>--private</code> for <code>--public</code> if you want it visible.</p>
+        <div class="cmd">
+          <div class="cmd-top"><span class="tag all">Every platform</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>gh repo create my-app --template SubAgentX/project-template --private --clone
+cd my-app</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="dot">3</div>
+      <div>
+        <h3>Bootstrap the scaffold</h3>
+        <p>Fills in the project name, strips the template instructions out of the README, tidies the placeholder files, creates <code>.env</code> from the example, then deletes itself. The second argument is your new repository, not the template.</p>
+
+        <div class="cmd" data-os="macos"><div class="cmd-top"><span class="tag nix">macOS</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>./scripts/init.sh "My App" "SubAgentX/my-app"</code></pre></div>
+
+        <div class="cmd" data-os="linux"><div class="cmd-top"><span class="tag nix">Linux</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>./scripts/init.sh "My App" "SubAgentX/my-app"</code></pre></div>
+
+        <div class="cmd" data-os="windows"><div class="cmd-top"><span class="tag win">Windows &middot; PowerShell</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>./scripts/init.ps1 "My App" "SubAgentX/my-app"</code></pre></div>
+
+        <p>Run it with no arguments to be prompted for each value instead.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="dot">4</div>
+      <div>
+        <h3>Open it in VS Code</h3>
+        <p>If <code>code</code> is not recognised, open VS Code and run <em>Shell Command: Install 'code' command in PATH</em> from the command palette.</p>
+        <div class="cmd">
+          <div class="cmd-top"><span class="tag all">Every platform</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>code .</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="dot">5</div>
+      <div>
+        <h3>Wire up lint and test</h3>
+        <p>The scaffold ships four stubs that print a reminder and pass. Edit them to call your real tools &mdash; the comments at the top of each file list the usual command for Node, Python, Go and Rust.</p>
+        <p>Keep each pair doing the same thing: CI runs the shell version on Linux and macOS and the PowerShell version on Windows, so a difference shows up as one platform failing.</p>
+        <div class="cmd">
+          <div class="cmd-top"><span class="tag all">Files to edit</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>scripts/lint.sh    scripts/lint.ps1
+scripts/test.sh    scripts/test.ps1</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="dot">6</div>
+      <div>
+        <h3>Check it passes locally</h3>
+        <p>CI runs exactly these scripts, so green here means green there.</p>
+
+        <div class="cmd" data-os="macos"><div class="cmd-top"><span class="tag nix">macOS</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>./scripts/lint.sh &amp;&amp; ./scripts/test.sh</code></pre></div>
+
+        <div class="cmd" data-os="linux"><div class="cmd-top"><span class="tag nix">Linux</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>./scripts/lint.sh &amp;&amp; ./scripts/test.sh</code></pre></div>
+
+        <div class="cmd" data-os="windows"><div class="cmd-top"><span class="tag win">Windows &middot; PowerShell</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>./scripts/lint.ps1
+./scripts/test.ps1</code></pre></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="dot">7</div>
+      <div>
+        <h3>Commit and push</h3>
+        <p>This first push is what triggers CI. Watch it under the <em>Actions</em> tab on GitHub &mdash; six jobs run, lint and test across Ubuntu, Windows and macOS.</p>
+        <div class="cmd">
+          <div class="cmd-top"><span class="tag all">Every platform</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>git add -A
+git commit -m "Set up project from template"
+git push</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PART 3 ============ -->
+  <section class="part">
+    <div class="part-head">
+      <span class="part-num">Part three</span>
+      <h2>Starting without a GitHub repository</h2>
+    </div>
+    <p class="part-note">For a local experiment you are not ready to publish. Needs Node installed for <code>npx</code>, but no <code>gh</code> and no GitHub account.</p>
+
+    <div class="step">
+      <div class="dot">1</div>
+      <div>
+        <h3>Pull the template with no git history</h3>
+        <p><code>degit</code> downloads the files only &mdash; no <code>.git</code> folder, nothing to clean up afterwards.</p>
+        <div class="cmd">
+          <div class="cmd-top"><span class="tag all">Every platform</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>npx degit SubAgentX/project-template my-app
+cd my-app
+git init</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="dot">2</div>
+      <div>
+        <h3>Bootstrap, leaving the repository blank</h3>
+        <p>Pass the name only. The README keeps its <code>&lt;owner&gt;/&lt;repo&gt;</code> placeholders until you decide where it lives.</p>
+
+        <div class="cmd" data-os="macos"><div class="cmd-top"><span class="tag nix">macOS</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>./scripts/init.sh "My App"</code></pre></div>
+
+        <div class="cmd" data-os="linux"><div class="cmd-top"><span class="tag nix">Linux</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>./scripts/init.sh "My App"</code></pre></div>
+
+        <div class="cmd" data-os="windows"><div class="cmd-top"><span class="tag win">Windows &middot; PowerShell</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>./scripts/init.ps1 "My App"</code></pre></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="dot">3</div>
+      <div>
+        <h3>Publish it later, when you are ready</h3>
+        <p>Creates the GitHub repository from what you already have locally and pushes in one step.</p>
+        <div class="cmd">
+          <div class="cmd-top"><span class="tag all">Every platform</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>git add -A &amp;&amp; git commit -m "Initial commit"
+gh repo create my-app --source=. --private --push</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PART 4 ============ -->
+  <section class="part">
+    <div class="part-head">
+      <span class="part-num">Part four</span>
+      <h2>When something goes wrong</h2>
+    </div>
+    <p class="part-note">The failures worth knowing about before you hit them.</p>
+
+    <div class="gotchas">
+
+      <div class="gotcha" data-os="windows">
+        <h3><span class="tag win">Windows</span> running scripts is disabled on this system</h3>
+        <p>PowerShell's execution policy is blocking <code>init.ps1</code>. Allow scripts for this window only, then run it again.</p>
+        <div class="cmd">
+          <div class="cmd-top"><span class="tag win">PowerShell</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass</code></pre>
+        </div>
+      </div>
+
+      <div class="gotcha" data-os="windows">
+        <h3><span class="tag win">Windows</span> the file is not recognised as a command</h3>
+        <p>PowerShell will not run a script from the current folder without a path prefix. Use <code>./scripts/init.ps1</code>, never a bare <code>scripts/init.ps1</code>.</p>
+        <p>A <code>.sh</code> file will not run here at all. Use the <code>.ps1</code> version, or switch the VS Code terminal to <em>Git Bash</em> from the dropdown beside the <strong>+</strong> in the terminal panel.</p>
+      </div>
+
+      <div class="gotcha">
+        <h3><span class="tag all">Every platform</span> permission denied when running a script</h3>
+        <p>The executable bit did not survive the copy. Restore it and run again.</p>
+        <div class="cmd">
+          <div class="cmd-top"><span class="tag nix">macOS &middot; Linux</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>chmod +x scripts/*.sh</code></pre>
+        </div>
+      </div>
+
+      <div class="gotcha">
+        <h3><span class="tag all">Every platform</span> CI passes but the tests actually failed</h3>
+        <p>This one only bites on Windows, and it is silent. PowerShell does not fail a script when a command inside it exits non-zero &mdash; it carries on and still reports success, so a broken test suite shows a green build.</p>
+        <p>The shipped stubs already guard against it on PowerShell 7.3 and newer. On Windows PowerShell 5.1 there is no such setting, so check the exit code yourself after every command you add:</p>
+        <div class="cmd">
+          <div class="cmd-top"><span class="tag win">Inside your .ps1 scripts</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>npm test
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }</code></pre>
+        </div>
+      </div>
+
+      <div class="gotcha">
+        <h3><span class="tag all">Every platform</span> gh: command not found</h3>
+        <p>Either the CLI is not installed, or your terminal is still running with the PATH it had before you installed it. Close the terminal, open a new one, and try again before reinstalling.</p>
+      </div>
+
+      <div class="gotcha">
+        <h3><span class="tag all">Every platform</span> the CI matrix costs too much</h3>
+        <p>Six jobs run on every push. That is free on public repositories, but on private ones Windows minutes bill at twice the rate and macOS at ten times. If a project only ever runs in one place, cut the matrix down in <code>.github/workflows/ci.yml</code>:</p>
+        <div class="cmd">
+          <div class="cmd-top"><span class="tag all">ci.yml</span><button class="copy" type="button">Copy</button></div>
+          <pre><code>matrix:
+  os: [ubuntu-latest]</code></pre>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <p>
+      Template: <a href="https://github.com/SubAgentX/project-template">SubAgentX/project-template</a>.
+      Update this playbook whenever the template's scripts change.
+    </p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var KEY = 'playbook-os';
+  var buttons = Array.prototype.slice.call(document.querySelectorAll('.seg button[data-pick]'));
+  var scoped  = Array.prototype.slice.call(document.querySelectorAll('[data-os]'));
+
+  function apply(os) {
+    scoped.forEach(function (el) {
+      el.hidden = el.getAttribute('data-os') !== os;
+    });
+    buttons.forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-pick') === os));
+    });
+    try { localStorage.setItem(KEY, os); } catch (e) {}
+  }
+
+  var saved = 'windows';
+  try {
+    var v = localStorage.getItem(KEY);
+    if (v === 'macos' || v === 'linux' || v === 'windows') { saved = v; }
+  } catch (e) {}
+  apply(saved);
+
+  buttons.forEach(function (b) {
+    b.addEventListener('click', function () { apply(b.getAttribute('data-pick')); });
+  });
+
+  document.querySelectorAll('.copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var pre = btn.closest('.cmd').querySelector('pre');
+      var text = pre.innerText.replace(/\s+$/, '');
+      function done() {
+        var old = btn.textContent;
+        btn.textContent = 'Copied';
+        btn.setAttribute('data-done', '1');
+        setTimeout(function () {
+          btn.textContent = old;
+          btn.removeAttribute('data-done');
+        }, 1400);
+      }
+      function fallback() {
+        var r = document.createRange();
+        r.selectNodeContents(pre);
+        var s = window.getSelection();
+        s.removeAllRanges();
+        s.addRange(r);
+        btn.textContent = 'Select + copy';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 1800);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, fallback);
+      } else {
+        fallback();
+      }
+    });
+  });
+})();
+</script>
