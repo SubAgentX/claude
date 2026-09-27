@@ -1,14 +1,61 @@
+<!-- TEMPLATE:START -->
+<!--
+  Everything between the TEMPLATE markers explains how to USE this template.
+  `scripts/init.sh` deletes this block automatically when you bootstrap a new
+  project, leaving the clean README template below.
+-->
+
+# Project Template
+
+> A generic, language-agnostic project scaffold. Start a new project with
+> sensible structure, docs and tooling already in place.
+
+## Start a new project from this template
+
+Pick whichever fits how you work — all four produce the same tree.
+
+**1. GitHub UI** — click the green **Use this template** button above, then
+`git clone` your new repo. Cleanest option: you get a brand-new repository with
+a single fresh commit and no inherited history.
+
+**2. GitHub CLI** — one command, repo created and cloned:
+
+```bash
+gh repo create my-app --template SubAgentX/project-template --private --clone
+cd my-app
+```
+
+**3. degit** — no GitHub repo, no git history, nothing to clean up:
+
+```bash
+npx degit SubAgentX/project-template my-app
+cd my-app && git init
+```
+
+**4. Plain git** — works anywhere, no extra tooling:
+
+```bash
+git clone --depth=1 https://github.com/SubAgentX/project-template.git my-app
+cd my-app && rm -rf .git && git init
+```
+
+## Then bootstrap it
+
+```bash
+./scripts/init.sh "My App" "SubAgentX/my-app"
+```
+
+That script replaces the placeholders, deletes the `.gitkeep` files, resets the
+changelog, copies `.env.example` to `.env`, strips this template section from the
+README, and finally removes itself. Run it with no arguments to be prompted.
+
+<!-- TEMPLATE:END -->
+
 # Project Name
 
 > One-sentence description of what this project does and who it's for.
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-
-<!--
-  This is a generic, language-agnostic project scaffold.
-  Copy this folder into a new repository, rename it, and replace the
-  placeholder text below with your real project information.
--->
 
 ---
 
@@ -39,11 +86,12 @@ usually enough.
 ## Project structure
 
 ```
-project-template/
+.
 ├── .github/
 │   └── workflows/          # CI/CD pipeline definitions (GitHub Actions)
 ├── docs/                   # Long-form documentation, diagrams, ADRs
 ├── scripts/                # Setup, build, deploy and maintenance scripts
+│   └── init.sh             # One-time bootstrap; deletes itself after running
 ├── src/                    # Application source code
 ├── tests/                  # Automated tests, mirroring the src/ layout
 ├── .editorconfig           # Editor formatting rules shared across IDEs
@@ -66,7 +114,7 @@ project-template/
 | `.github/workflows/` | CI pipelines that run on push and pull request. |
 
 > **Note:** empty directories contain a `.gitkeep` file, because git does not
-> track empty folders. Delete each `.gitkeep` once you add real files.
+> track empty folders. `scripts/init.sh` removes them for you.
 
 ---
 
